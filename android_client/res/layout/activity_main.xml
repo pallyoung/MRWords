@@ -5,6 +5,7 @@
     tools:context="${relativePackage}.${activityClass}" >
 
     <cn.com.fan6.MyWebView
+        android:id="@+id/web"
         style="@style/web">
         
     </cn.com.fan6.MyWebView>
