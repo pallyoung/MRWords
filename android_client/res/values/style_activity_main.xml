@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="main">
+        <item name="android:windowNoTitle">true</item>
+    	<item name="android:background">@color/transparent</item>
+    </style>
+    
+    <style name="web">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+</resources>
