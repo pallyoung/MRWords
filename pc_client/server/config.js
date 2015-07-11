@@ -1,0 +1,9 @@
+module.exports={
+	"port":3000,
+	"webroot":"src",
+	"context":"",
+	"debug":true,
+	"index":"index.html",
+	"unicode":"utf-8",
+	"controller":"router_config.js"
+};

@@ -27,6 +27,8 @@ table, caption, tbody, tfoot, thead, tr, th, td,header{
     vertical-align: baseline;
     font-size:inherit;
     text-size-adjust:none;
+    box-sizing:border-box;
+
 }
 ol,ul,li{
     list-style: none;

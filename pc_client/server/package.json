@@ -1,0 +1,12 @@
+{
+	"name": "server",
+	"version": "0.0.1",
+	"license": "MIT",
+	"dependencies": {
+		"s2server": ">= 0.0.0"		
+	},
+	"keywords": [
+		"webrtc"
+	],
+	"readmeFilename": "README.md"
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>index</title>
+</head>
+<body>
+	<div>
+		<p>
+			<label for="">bookname:</label>
+			<input type="date" id="time" onchange="newbook()"></p>
+		<p>
+			<label for="">word:</label>
+			<input type="text" id="word"></p>
+		<p>
+			<label for="">count:</label>
+			<span id="count"></span>
+		</p>
+		<p>
+			<a href="javascript:void(0)" onclick="save()">录入</a>
+		</p>
+	</div>
+	<div>
+		<p>
+			<a href="javascript:void(0)" onclick="savetoserver()">保存到服务器</a>
+		</p>
+	</div>
+	<script>
+		var wordlist={};
+		var activelist;
+		function newbook(){
+			var name=new Date(document.getElementById("time").value).getTime();
+			if(!wordlist[name]){
+				wordlist[name]=[];
+			}
+			activelist=wordlist[name];
+			document.getElementById("count").innerHTML=activelist.length;
+		}
+		function save () {
+			activelist.push({
+				word:document.getElementById('word').value,
+				name:new Date(document.getElementById("time").value).getTime()				
+			});
+			document.getElementById('word').value="";
+			document.getElementById("count").innerHTML=activelist.length;
+		}
+		function savetoserver(){
+			var xhr=new XMLHttpRequest();
+			xhr.open("post","common/savewordlist");
+			var data="";
+			data+="list="+JSON.stringify(activelist);
+			data+="&name="+new Date(document.getElementById("time").value).getTime();
+
+			xhr.onreadystatechange = function() {			
+				if (xhr.readyState == 4) {
+					xhr.onreadystatechange=null;
+					if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+						alert("success");
+					} else {
+						alert("error");
+					}
+				}
+			};
+			xhr.send(data);
+		}
+	</script></body>
+</html>
