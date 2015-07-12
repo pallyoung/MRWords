@@ -4,9 +4,9 @@
     android:layout_height="match_parent"
     tools:context="${relativePackage}.${activityClass}" >
 
-    <cn.com.fan6.MyWebView
+    <cn.com.fan6.views.MyWebView
         android:id="@+id/web"
         style="@style/web">
         
-    </cn.com.fan6.MyWebView>
+    </cn.com.fan6.views.MyWebView>
 </RelativeLayout>

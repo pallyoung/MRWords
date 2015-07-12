@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.webkit.WebSettings;
@@ -28,7 +29,6 @@ public class MyWebView extends WebView{
 		super(context, attrs, defStyle);
 		this.ctx=context;
 		init();
-		
 		touchTimes.put(MotionEvent.ACTION_DOWN, System.currentTimeMillis());
 		touchTimes.put(MotionEvent.ACTION_UP, System.currentTimeMillis());
 
@@ -42,10 +42,10 @@ public class MyWebView extends WebView{
 		settings.setJavaScriptEnabled(true);
 		settings.setJavaScriptCanOpenWindowsAutomatically(true);
 		settings.setAllowFileAccess(true);
-		if(Build.VERSION.SDK_INT>Build.VERSION_CODES.JELLY_BEAN){
+		if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN){
 			settings.setAllowFileAccessFromFileURLs(true);
-			settings.setAllowUniversalAccessFromFileURLs(true);			
-		}		
+			settings.setAllowUniversalAccessFromFileURLs(true);		
+		}
 		settings.setAllowContentAccess(true);
 		settings.setDatabaseEnabled(true);
 		settings.setDomStorageEnabled(true);

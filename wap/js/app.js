@@ -116,7 +116,6 @@
 							}
 							db.put("wordslist",[{value:data}]);
 							cb(data.meaning);
-							console.log(data.meaning);
 						},
 						error:function(){
 
@@ -217,11 +216,11 @@
 		indexs[1].css("top:0;left:0;overflow-y:auto");
 		indexs[2].css("z-index:-1");
 		wordpage.setAdapter(wordslists);
-		wordpage.css("z-index:1;top:0;bottom:2rem;left:0;");
-		wordslists[1].css("top:0;left:0;overflow-y:auto;padding-left:1em");
+		wordpage.css("z-index:1;top:0;bottom:2rem;left:0;overflow-y:auto;");
+		wordslists[1].css("top:0;left:0;padding-left:1em");
 		wordslists[2].css("z-index:-1");
 		tipsView.css("width:100%;position:absolute;bottom:2rem;z-index:3;display:none");
-		toolbar.css("bottom:0;height:2rem;");
+		toolbar.css("bottom:0;height:2rem;position:fixed");
 		toolbar.setAdapter([backView,updateView]);
 		backView.css("position:absolute;right:0;");
 		updateView.css("position:absolute;left:0;");
@@ -239,15 +238,19 @@
 		},false);
 		wordpage.on("click",function(e){
 			var word=e.target.innerHTML;
-			tipsView.style("display","none");
+			
 			if(e.target.tagName==="WORDVIEW"&&word!=""){
 				getMeaning(word,function(meaning){
 					tipsView.bind({word:meaning})
 					tipsView.render(tipsView.data);
-					tipsView.style("display","block");
+					tipsView.css("width:100%;position:absolute;bottom:2rem;z-index:3;display:block;text-align:right");
+					//tipsView.style("display","block");
 				})
 			}
 		},false);
+		toolbar.on("click",function(){
+			tipsView.style("display","none");
+		});
 		backView.on("click",function(){
 			homepage.style("display","block");
 			wordpage.style("display","none");
