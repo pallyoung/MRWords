@@ -3,81 +3,265 @@
 <head>
 	<meta charset="UTF-8">
 	<title>index</title>
+	<style>
+		html{
+			font-size: 1.25em;
+		}
+		*{
+			font-size: 1rem;
+			margin: 0;
+			padding: 0;
+			box-sizing:border-box;
+		}
+		html,body{
+			height: 100%
+		}
+		.left,.right,.main{
+			height: 100%;
+			display: inline-block;
+			vertical-align: middle;
+		}
+		.left,.right{
+			width: 20%;
+			overflow-y:auto 
+		}
+		.left{
+			border-right: solid 1px rgb(0,0,0)
+		}
+		.right{
+			border-left: solid 1px rgb(0,0,0)
+		}
+	
+		.main{
+			width: 58%;
+		}
+
+		.top{
+			width: 100%;
+			height: 8em;
+			border-bottom: solid 1px rgb(0,0,0)
+		}
+		.title{
+			line-height: 2em
+		}
+		#booknames{
+			height: 4em;
+			overflow-y:auto;
+		}
+		.actionBar{
+			height: 2em;
+			text-align: right;
+		}
+		#booknames li{
+			display: inline-block;
+			margin-right: 1em;
+			line-height:1.5em;
+		}
+		.middle{
+			line-height: 2em;
+		}
+		#items{
+			height: 70%;
+			border-bottom:solid 1px rgb(0,0,0);
+		}
+		#meaning{
+			height: 28%
+		}
+	</style>
 </head>
 <body>
-	<div>
-		<p>
-			<a href="javascript:void(0)" id="add" onclick="newbook()">添加</a>
-			<input type="date" id="time"></p>
-		</p>
-		<div>
-			<p>已录入</p>
-			<p id="booknames"></p>
+	<div class="left">
+		<ul id="wordlists">
+			
+		</ul>
+	</div>
+
+	<div class="main">
+		<div class="top">
+			<p class="title">已添加</p>
+			<ul id="booknames"></ul>
+			<p class="actionBar">
+				<input type="date" id="time">
+				<a href="javascript:void(0)" id="add" onclick="newbook()">添加</a>
+			</p>
 		</div>
-		<p>
-			<label for="">bookname:</label><span id='activiteBook'></span>
-		</p>
-			<label for="">word:</label>
-			<input type="text" id="word"></p>
-		<p>
-			<label for="">counter:</label>
-			<span id="count"></span>
-		</p>
+		
+		<div class="middle">
+			<p class="title">
+				<label for="">bookname:</label><span id='activiteBook'></span>
+			</p>
+			<p class="title">
+				<label for="">word:</label>
+				<input type="text" id="word">
+			</p>
+			<p class="title">
+				<label for="">counter:</label>
+				<span id="count"></span>
+			</p>
 		<p>
 			<a href="javascript:void(0)" onclick="save()" id="record">录入</a>
 		</p>
-	</div>
-	<div>
+		<div>
 		<p>
 			<a href="javascript:void(0)" onclick="savetoserver()">保存到服务器</a>
 		</p>
-	</div>
-	<div id="items">
+		</div>
+		
+			
 		
 	</div>
+	</div>
+	
+	<div class="right">
+		<ul id="items">
+		
+		</ul>
+		<div id="meaning">
+			
+		</div>
+	</div>
+	
+
 	<script>
 		var wordlist={};
 		var activelist;
-
+		function parseName(name){
+			return new Date(Number(name)).toLocaleDateString();
+		}
+		function getList(){
+			var xhr=new XMLHttpRequest();
+			xhr.open("get","common/getWordListsURL");
+			xhr.onreadystatechange = function() {			
+				if (xhr.readyState == 4) {
+					xhr.onreadystatechange=null;
+					if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+						var data=JSON.parse(xhr.responseText);
+						var html=[];
+						for(i in data){
+							html.push("<li data-url='"+data[i].url+"'");
+							html.push(" data-name='"+data[i].fname+"'>");
+							html.push(parseName(data[i].fname));
+							html.push("</li>");
+						}
+						document.getElementById("wordlists").innerHTML=html.join("");
+					} else {
+						alert("get list error");
+					}
+				}
+			};
+			xhr.send(null);
+		}
+		function decodeHTML(html){
+			return html.replace(/&lt;/g,"<");
+		}
+		function encodeHTML(html){
+			return html.replace(/</g,"&lt;");
+		}
+		function showWordList(item,name){
+			var html=[];
+			for(var i in item){
+				html.push("<li data-meaning='"+encodeHTML(item[i].meaning)+"' ");
+				html.push("data-updatetime='"+item[i].updateTime+"'>");
+				html.push(item[i].word);
+				html.push("</li>");
+			}
+			document.getElementById("activiteBook").innerHTML=parseName(name);
+			document.getElementById("activiteBook").dataset.name=name;
+			document.getElementById("count").innerHTML=Object.keys(item).length;
+			document.getElementById("items").innerHTML=html.join("");
+		}
+		function showMeaning(e){
+			var target=e.target;
+			var dataset=target.dataset;
+			if(dataset.meaning){
+				document.getElementById("meaning").innerHTML=decodeHTML(dataset.meaning);
+			}
+		}
+		function getBookFromServer(e){
+			var target=e.target;
+			var dataset=target.dataset;
+			var xhr;
+			var name;
+			if(dataset.url){
+				name=dataset.name;
+				xhr=new XMLHttpRequest();
+				xhr.open("get",dataset.url);
+				xhr.onreadystatechange = function() {			
+				if (xhr.readyState == 4) {
+					xhr.onreadystatechange=null;
+					if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+						var data=JSON.parse(xhr.responseText);
+						showWordList(data,name);
+					} else {
+						alert("getBookFromServer error");
+					}
+				}
+				};
+				xhr.send(null);
+			}
+		}
+		function getBookFromCache(e){
+			var target=e.target;
+			var dataset=target.dataset;
+			var xhr;
+			var name,data;
+			if(dataset.name){
+				name=dataset.name;
+				data=wordlist[name];
+			}
+			showWordList(data,name);
+		}
 		function newbook(){
+			if(document.getElementById("time").value==""){
+				return;
+			}
 			var name=new Date(document.getElementById("time").value).getTime();
 			if(!wordlist[name]){
-				wordlist[name]=[];
+				wordlist[name]={};
 			}
-			activelist=wordlist[name];
-			document.getElementById("count").innerHTML=activelist.length;
-			document.getElementById("activiteBook").innerHTML=name;
 			showBookNames();
-			showBook();
+		}
+		function getActiveBook(){
+			return wordlist[getActiveBookName()];
+		}
+		function getActiveBookName(){
+			return document.getElementById("activiteBook").dataset.name;
 		}
 		function showBookNames(){
 			var html=[];
 			for(var o in wordlist){
-				html.push("<a href='javascript:void(0)' style='margin:2em'>"+new Date(Number(o)).toLocaleDateString()+"</a>");
+				html.push("<li data-name='"+o+"'>"+parseName(o)+"</li>");
 			}
 			document.getElementById("booknames").innerHTML=html.join("");	
 		}
 		function save () {
+			
+			var name=document.getElementById("activiteBook").dataset.name;
+			var activelist=wordlist[name];
 			var item={
 				word:document.getElementById('word').value,
-				name:document.getElementById("activiteBook").innerHTML				
+				name:name,
+				meaning:"",
+				undateTime:Date.now()			
 			};
-			activelist.push(item);
+			activelist[document.getElementById('word').value]=item;
 			document.getElementById('word').value="";
-			document.getElementById("count").innerHTML=activelist.length;
 			getMeaning(item);
 		}
 		function savetoserver(){
 			var xhr=new XMLHttpRequest();
 			xhr.open("post","common/savewordlist");
 			var data="";
-			data+="list="+JSON.stringify(activelist);
-			data+="&name="+document.getElementById("activiteBook").innerHTML;
+			data+="list="+JSON.stringify(getActiveBook());
+			data+="&name="+document.getElementById("activiteBook").dataset.name;
 
 			xhr.onreadystatechange = function() {			
 				if (xhr.readyState == 4) {
 					xhr.onreadystatechange=null;
 					if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+						delete wordlist[getActiveBookName()];
+						showBookNames();
+						getList();
 						alert("success");
 					} else {
 						alert("error");
@@ -102,7 +286,7 @@
 						if(reg.test(item.meaning)){
 							item.meaning=RegExp.$1;
 						}
-						showBook();
+						showWordList(getActiveBook(),getActiveBookName());
 					} else {
 						alert("get meaning error");
 					}
@@ -110,26 +294,8 @@
 			};
 			xhr.send(data);
 		}
-		function showBook(){
-			var html=[];
-
-			for(var i=0;i<activelist.length;i++){
-				html.push("<p onclick='showMeaning()'>"+activelist[i].word+"</p>");
-				html.push("<div style='display:none'>"+activelist[i].meaning+"</div>");
-			}
-			document.getElementById("items").innerHTML=html.join("");
-		}
-		function showMeaning(){
-			var next=this.nextElementSibling;
-			if(next.style.display==="none"){
-				next.style.display="block";
-			}else{
-				next.style.display="none";
-			}
-		}
 		document.getElementById("word").onkeypress=function(e){
 			if(e.keyCode=="13"){
-
 				save();
 			}
 		}
@@ -139,5 +305,9 @@
 				document.getElementById("word").focus();
 			}
 		}
+		getList();
+		document.getElementById("items").addEventListener("click",showMeaning,false);
+		document.getElementById("booknames").addEventListener("click",getBookFromCache,false);
+		document.getElementById("wordlists").addEventListener("click",getBookFromServer,false);
 	</script></body>
 </html>

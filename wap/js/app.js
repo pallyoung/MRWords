@@ -2,6 +2,7 @@
 	function factory(View, DBM, http) {
 		var db = new DBM("MRWords");
 		var ip="http://192.168.1.111:3000";
+		ip="http://localhost:3000";
 		db.contains("wordslist").then(function(data) {
 			if (!data.result) {
 				db.createObjectStore("wordslist", {
@@ -36,7 +37,7 @@
 				type: "get",
 				url: ip+"/common/getWordsUpdateTime",
 				success: function(data) {
-					var updateTime;
+					var updateTime=0;
 					try {
 						updateTime = Number(localStorage.getItem("updateTime"));
 						localStorage.setItem("updateTime", data);
@@ -62,7 +63,7 @@
 				url: ip+"/common/getWordListsURL",
 				success: function(data) {
 					data = parseJSON(data);
-					for(var i=0;i<data.length;i++){
+					for(var i in data){
 						if(Number(data[i].updateTime)>Number(localStorage.getItem("lastUpdateTime"))){
 							getWordList(data[i].url);
 						}
@@ -80,7 +81,7 @@
 				url:ip+"/"+url,
 				success:function(data){
 					data=parseJSON(data);
-					for(var i=0;i<data.length;i++){
+					for(var i in data){
 						db.put("wordslist",[{value:data[i]}]);
 					}
 					db.then(function(){
@@ -183,7 +184,7 @@
 			for(var i=0;i<realCount;i++){
 				view=new View.WordView();
 				view.setTag("name",names[start+i]);
-				view.bind({word:new Date(names[start+i]).toLocaleDateString()})
+				view.bind({word:new Date(Number(names[start+i])).toLocaleDateString()})
 				books.push(view);
 			}
 			indexs[1].setAdapter(books);

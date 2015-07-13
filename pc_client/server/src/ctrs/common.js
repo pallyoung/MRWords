@@ -5,6 +5,7 @@
 	var util=require("util");
 	function savewordlist(request,response){
 		var _path;
+		var updatetime=Date.now();
 		if(!fs.existsSync(path)){
 			fs.mkdirSync(path);
 		};
@@ -25,19 +26,20 @@
 			}			
 			response.end();
 		});
-		fs.writeFile(path+"/updatetime.json",fname, function(err) {
+		fs.writeFile(path+"/updatetime.json",updatetime, function(err) {
 
 		});
 		fs.readFile(path+"/wordlists.json",function(err,data){
 			if(data!=undefined){
 				data=JSON.parse(data);
 			}else{
-				data=[];
+				data={};
 			}
-			data.push({
-				"updateTime":fname,
+			data[fname]={
+				"fname":fname,
+				"updateTime":updatetime,
 				"url":"data/wordlist/"+fname+".json"
-			});
+			}
 			fs.writeFile(path+"/wordlists.json",JSON.stringify(data), function(err) {
 
 			});
@@ -62,7 +64,7 @@
 			if(data!=undefined){
 				response.write(data);
 			}else{
-				response.write("[]");
+				response.write("{}");
 			}			
 			response.end();
 		});
