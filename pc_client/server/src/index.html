@@ -7,13 +7,20 @@
 <body>
 	<div>
 		<p>
-			<label for="">bookname:</label>
-			<input type="date" id="time" onchange="newbook()"></p>
+			<a href="javascript:void(0)" id="add" onclick="newbook()">添加</a>
+			<input type="date" id="time"></p>
+		</p>
+		<div>
+			<p>已录入</p>
+			<p id="booknames"></p>
+		</div>
 		<p>
+			<label for="">bookname:</label><span id='activiteBook'></span>
+		</p>
 			<label for="">word:</label>
 			<input type="text" id="word"></p>
 		<p>
-			<label for="">count:</label>
+			<label for="">counter:</label>
 			<span id="count"></span>
 		</p>
 		<p>
@@ -24,6 +31,9 @@
 		<p>
 			<a href="javascript:void(0)" onclick="savetoserver()">保存到服务器</a>
 		</p>
+	</div>
+	<div id="items">
+		
 	</div>
 	<script>
 		var wordlist={};
@@ -36,21 +46,33 @@
 			}
 			activelist=wordlist[name];
 			document.getElementById("count").innerHTML=activelist.length;
+			document.getElementById("activiteBook").innerHTML=name;
+			showBookNames();
+			showBook();
+		}
+		function showBookNames(){
+			var html=[];
+			for(var o in wordlist){
+				html.push("<a href='javascript:void(0)' style='margin:2em'>"+new Date(Number(o)).toLocaleDateString()+"</a>");
+			}
+			document.getElementById("booknames").innerHTML=html.join("");	
 		}
 		function save () {
-			activelist.push({
+			var item={
 				word:document.getElementById('word').value,
-				name:new Date(document.getElementById("time").value).getTime()				
-			});
+				name:document.getElementById("activiteBook").innerHTML				
+			};
+			activelist.push(item);
 			document.getElementById('word').value="";
 			document.getElementById("count").innerHTML=activelist.length;
+			getMeaning(item);
 		}
 		function savetoserver(){
 			var xhr=new XMLHttpRequest();
 			xhr.open("post","common/savewordlist");
 			var data="";
 			data+="list="+JSON.stringify(activelist);
-			data+="&name="+new Date(document.getElementById("time").value).getTime();
+			data+="&name="+document.getElementById("activiteBook").innerHTML;
 
 			xhr.onreadystatechange = function() {			
 				if (xhr.readyState == 4) {
@@ -63,6 +85,47 @@
 				}
 			};
 			xhr.send(data);
+		}
+		function getMeaning(item,cb) {
+			var xhr=new XMLHttpRequest();
+			xhr.open("post","http://fy.iciba.com/api.php");
+			var data=new FormData();
+			data.append("type","auto");
+			data.append("q",item.word);
+			xhr.onreadystatechange = function() {			
+				if (xhr.readyState == 4) {
+					xhr.onreadystatechange=null;
+					if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+						var responseData=JSON.parse(xhr.responseText);
+						var reg=/(<p>[\s]*?<span\s*class=\"dt\">.+<\/p>)/;
+						item.meaning=responseData.ret.replace(/\r\n/g,"");
+						if(reg.test(item.meaning)){
+							item.meaning=RegExp.$1;
+						}
+						showBook();
+					} else {
+						alert("get meaning error");
+					}
+				}
+			};
+			xhr.send(data);
+		}
+		function showBook(){
+			var html=[];
+
+			for(var i=0;i<activelist.length;i++){
+				html.push("<p onclick='showMeaning()'>"+activelist[i].word+"</p>");
+				html.push("<div style='display:none'>"+activelist[i].meaning+"</div>");
+			}
+			document.getElementById("items").innerHTML=html.join("");
+		}
+		function showMeaning(){
+			var next=this.nextElementSibling;
+			if(next.style.display==="none"){
+				next.style.display="block";
+			}else{
+				next.style.display="none";
+			}
 		}
 		document.getElementById("word").onkeypress=function(e){
 			if(e.keyCode=="13"){
