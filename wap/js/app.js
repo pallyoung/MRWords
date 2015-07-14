@@ -51,19 +51,47 @@
 			painter.width = document.body.clientWidth;
 		}
 		function  showLoading () {
+			document.getElementById(ID_OVERLAY).style.display="block";
 			var painter = document.getElementById(ID_PAINTER);
-			var pctx = painter.getContext("2d");
+			var ctx = painter.getContext("2d");
 			var height = painter.height;
 			var width = painter.width;
-
+			var starttime = 0;
+			painter.width=width;
 			function  draw (timestamp) {
-				var deg = Math.PI/12;
+				if(starttime===0){
+					starttime = timestamp;
+				}
+				var deg = Math.PI/6;
+				var o1 = 44;
+				var r1 = 8;
+				var intervel = 100;
+				painter.width=width;
+				ctx.save();
 				ctx.translate(width/2,height/2);
-
+				ctx.rotate(Math.ceil((timestamp-starttime)/intervel)*deg);
+				ctx.fillStyle = "rgb(255,255,255)";
+				ctx.arc(o1,0,r1,0,Math.PI*2,false);
+				ctx.fill();
+				ctx.closePath();
+				
+				ctx.fillStyle = "rgb(160,160,160)";
+				for(var i=0;i<11;i++){
+					ctx.beginPath();
+					ctx.rotate(deg);
+					ctx.arc(o1,0,r1,0,Math.PI*2,false);
+					ctx.fill();
+					ctx.closePath();
+				}
+				ctx.restore();
+				if(document.getElementById(ID_OVERLAY).style.display!="none"){
+					requestAnimationFrame(draw);
+				}
 			}
+			requestAnimationFrame(draw);
 		}
 		function  hideLoading () {
-			// body...
+			document.getElementById(ID_OVERLAY).style.display="none";
 		}
 		function checkWordsUpdate() {
 			http.ajax({
@@ -136,6 +164,7 @@
 				if (data && data.meaning) {
 					cb(data.meaning);
 				} else {
+					showLoading ();
 					http.ajax({
 						type: "post",
 						url: "http://fy.iciba.com/api.php",
@@ -154,6 +183,7 @@
 								value: data
 							}]);
 							cb(data.meaning);
+							hideLoading();
 						},
 						error: function() {
 
@@ -180,6 +210,7 @@
 					}
 				}
 				showBooks(names, names.length);
+
 			});
 		}
 		var index = 0;
@@ -240,6 +271,7 @@
 				getMeaning(word, function(meaning) {
 					document.getElementById(ID_WORD).innerHTML = word;
 					document.getElementById(ID_MEANING).innerHTML = meaning;
+
 				})
 			}
 		}, false);
