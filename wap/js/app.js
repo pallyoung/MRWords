@@ -250,7 +250,7 @@
 				var html = [];
 				data = data.result;
 				for (var i = 0; i < data.length; i++) {
-					if (data[i].name === name) {
+					if (data[i].name == name) {
 						html.push("<li>");
 						html.push(data[i].word);
 						html.push("</li>");
