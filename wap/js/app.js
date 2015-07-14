@@ -15,7 +15,7 @@
 		var ID_BACK = "back";
 		var ID_OVERLAY = "overlay";
 		var ID_PAINTER = "painter";
-		ip = "http://localhost:3000";
+		//ip = "http://localhost:3000";
 
 		db.contains("wordslist").then(function(data) {
 			if (!data.result) {
