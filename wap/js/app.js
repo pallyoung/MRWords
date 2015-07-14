@@ -94,6 +94,7 @@
 			document.getElementById(ID_OVERLAY).style.display="none";
 		}
 		function checkWordsUpdate() {
+			showLoading ();
 			http.ajax({
 				type: "get",
 				url: ip + "/common/getWordsUpdateTime",
@@ -105,6 +106,8 @@
 						localStorage.setItem("lastUpdateTime", updateTime);
 						if (updateTime < data) {
 							getWordListsURL();
+						}else{
+							hideLoading();
 						}
 					} catch (e) {
 						localStorage.setItem("updateTime", data);
@@ -113,6 +116,7 @@
 					}
 				},
 				error: function() {
+					hideLoading();
 					alert("getWordsUpdateTime error");
 				}
 			});
@@ -131,6 +135,7 @@
 					}
 				},
 				error: function() {
+					hideLoading();
 					alert("getWordListsURL error");
 				}
 			});
@@ -153,6 +158,7 @@
 
 				},
 				error: function() {
+					hideLoading();
 					alert("getWordList error");
 				}
 			});
@@ -235,6 +241,7 @@
 				html.push('</li>');
 			}
 			document.getElementById(ID_BOOKLIST).innerHTML = html.join("");
+			hideLoading();
 		}
 
 		function showWords(name) {
