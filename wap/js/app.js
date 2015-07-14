@@ -1,8 +1,22 @@
 (function app() {
-	function factory(View, DBM, http) {
+	function factory(DBM, http) {
 		var db = new DBM("MRWords");
 		var ip = "http://192.168.1.111:3000";
+		var ID_MAIN = "main";
+		var ID_BOOKLIST = "booklist";
+		var ID_CONTENT = "content";
+		var ID_WORDLIST = "wordlist";
+		var ID_STAGE = "stage";
+		var ID_WORD = "word";
+		var ID_MEANING = "meaning";
+		var ID_FOOT = "foot";
+		var ID_UPDATE = "update";
+		var ID_BOOKNAME = "bookname";
+		var ID_BACK = "back";
+		var ID_OVERLAY = "overlay";
+		var ID_PAINTER = "painter";
 		ip = "http://localhost:3000";
+
 		db.contains("wordslist").then(function(data) {
 			if (!data.result) {
 				db.createObjectStore("wordslist", {
@@ -31,7 +45,26 @@
 				return json;
 			}
 		}
+		function initPainter () {
+			var painter = document.getElementById(ID_PAINTER);
+			painter.height = document.body.clientHeight;
+			painter.width = document.body.clientWidth;
+		}
+		function  showLoading () {
+			var painter = document.getElementById(ID_PAINTER);
+			var pctx = painter.getContext("2d");
+			var height = painter.height;
+			var width = painter.width;
 
+			function  draw (timestamp) {
+				var deg = Math.PI/12;
+				ctx.translate(width/2,height/2);
+
+			}
+		}
+		function  hideLoading () {
+			// body...
+		}
 		function checkWordsUpdate() {
 			http.ajax({
 				type: "get",
@@ -80,7 +113,7 @@
 				type: "get",
 				url: ip + "/" + url,
 				success: function(data) {
-					data = parseJSON(data);
+					data=parseJSON(data);
 					for (var i in data) {
 						db.put("wordslist", [{
 							value: data[i]
@@ -170,13 +203,13 @@
 				html.push(parseName(names[start + i]));
 				html.push('</li>');
 			}
-			document.getElementById('booklist').innerHTML = html.join("");
+			document.getElementById(ID_BOOKLIST).innerHTML = html.join("");
 		}
 
 		function showWords(name) {
 			db.query("wordslist", "name").then(function(data) {
 				var words = [];
-				var html=[];
+				var html = [];
 				data = data.result;
 				for (var i = 0; i < data.length; i++) {
 					if (data[i].name === name) {
@@ -185,38 +218,41 @@
 						html.push("</li>");
 					}
 				}
-				document.getElementById('wordlist').innerHTML = html.join("");
+				document.getElementById(ID_WORDLIST).innerHTML = html.join("");
+				document.getElementById(ID_WORD).innerHTML = "";
+				document.getElementById(ID_MEANING).innerHTML = "";
 			});
 		}
 
-		document.getElementById('booklist').addEventListener("click", function(e) {
+		document.getElementById(ID_BOOKLIST).addEventListener("click", function(e) {
 			var id = e.target.id;
 			var name = e.target.dataset.name;
 			if (name) {
-				document.getElementById('booklist').style.display = "none";
-				document.getElementById('content').style.display = "block";
+				document.getElementById(ID_BOOKLIST).style.display = "none";
+				document.getElementById(ID_CONTENT).style.display = "block";
 				showWords(name);
-				document.getElementById('bookname').innerHTML=parseName(name);
+				document.getElementById(ID_BOOKNAME).innerHTML = parseName(name);
 			}
 		}, false);
-		document.getElementById('wordlist').addEventListener("click", function(e) {
+		document.getElementById(ID_WORDLIST).addEventListener("click", function(e) {
 			var word = e.target.innerHTML;
 			if (word != "") {
 				getMeaning(word, function(meaning) {
-					document.getElementById('word').innerHTML = word;
-					document.getElementById('meaning').innerHTML = meaning;
+					document.getElementById(ID_WORD).innerHTML = word;
+					document.getElementById(ID_MEANING).innerHTML = meaning;
 				})
 			}
 		}, false);
-		document.getElementById('back').addEventListener("click", function() {
-			document.getElementById('booklist').style.display="block";
-			document.getElementById('content').style.display="none";
-			document.getElementById('bookname').innerHTML="";
+		document.getElementById(ID_BACK).addEventListener("click", function() {
+			document.getElementById(ID_BOOKLIST).style.display = "block";
+			document.getElementById(ID_CONTENT).style.display = "none";
+			document.getElementById(ID_BOOKNAME).innerHTML = "";
 		});
-		document.getElementById("update").addEventListener("click", function() {
+		document.getElementById(ID_UPDATE).addEventListener("click", function() {
 			checkWordsUpdate();
 		});
 		getBook();
+		initPainter();
 	}
-	define(["View", "DBM", "http"], factory);
+	define(["DBM", "http"], factory);
 })()

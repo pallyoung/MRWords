@@ -14,7 +14,7 @@
 			fs.mkdirSync(_path);
 		};
 		var fname=request.getParameter("name");
-		fs.writeFile(_path+"/"+fname+".json",request.getParameter("list"), function(err) {
+		fs.writeFile(_path+"/"+fname+".json",decodeURIComponent(request.getParameter("list")), function(err) {
 			response.writeHead(200, {
 				'Content-Type': 'text/plain;charset=UTF-8',
 			});

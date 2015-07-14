@@ -252,7 +252,7 @@
 			var xhr=new XMLHttpRequest();
 			xhr.open("post","common/savewordlist");
 			var data="";
-			data+="list="+JSON.stringify(getActiveBook());
+			data+="list="+encodeURIComponent(JSON.stringify(getActiveBook()));
 			data+="&name="+document.getElementById("activiteBook").dataset.name;
 
 			xhr.onreadystatechange = function() {			
