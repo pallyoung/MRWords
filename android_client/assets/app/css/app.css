@@ -1,0 +1,94 @@
+.gridview{
+	position: absolute;
+	width: 100%;
+}
+wordview{
+	display: block;
+}
+#main{
+	position: absolute;
+	top:0;
+	bottom: 3rem;
+	width: 100%;
+}
+
+#booklist{
+	overflow-y:auto;
+	z-index: 2；
+}
+#booklist li{
+	line-height: 3rem;
+}
+
+#booklist,#content{
+	position: absolute;
+	top:0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	padding: 0 1rem;
+}
+#content{
+	display: none;
+	overflow: hidden;
+}
+#wordlist{
+	height: 60%;
+	border-bottom: solid 1px rgb(0,0,0);
+	overflow-y:auto 
+}
+#wordlist li{
+	line-height: 3rem;
+}
+#stage{
+	height: 39%;
+	position: relative;
+}
+#word{
+	height: 3rem;
+	line-height: 3rem;
+
+}
+#meaning{
+	position: absolute;
+	top: 3rem;
+	bottom: 0;
+	width: 100%;
+}
+#foot{
+	position: absolute;
+	height: 3rem;
+	bottom: 0;
+	width: 100%;
+	overflow: hidden;
+	text-align: center;
+	background-image: linear-gradient(0deg, rgb(12, 99, 238), rgb(12, 99, 238) 100%, transparent 100%);
+	color:white;
+	background-size: 100%;
+	background-position: 50% 100%;
+	background-repeat: no-repeat;
+}
+#update{
+	padding:0 1rem;
+	line-height:3rem; 
+	float: left;
+}
+#back{
+	padding: 0 1rem;
+	line-height:3rem; 
+	float: right;
+}
+#bookname{
+	display: inline-block;
+	line-height:3rem; 
+	text-align: center;
+}
+#overlay{
+	position: absolute;
+	top:0;
+	left: 0;
+	height: 100%;
+	width:100%;
+	display: none;
+	background: rgba(0,0,0,0.5);
+}
