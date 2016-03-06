@@ -10,3 +10,4 @@ javac -target 1.8 -bootclasspath "D:/develop tools/adt-bundle-windows-x86_64-201
 /mrwords/*.java
 
 pause
+
