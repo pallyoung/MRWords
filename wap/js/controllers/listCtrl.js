@@ -1,13 +1,15 @@
 // listCtrl.js
 (function () {
 	function factory(mrwords){
-		mrwords.controller("listCtrl",function($scope,$remoteDB,$db,$rootScope){
+		mrwords.controller("listCtrl",function($scope,$remoteDB,$db,$rootScope,$const){
 			//$db.clear();
 			$scope.lists = [];
 			$db.getList().then(function(lists){		
 				$scope.lists = lists;
-				console.log($scope.lists);
+				$scope.$digest()
+				console.log(lists);
 			});
+			$scope.$emit("titlechange",$const.APP_NAME);
 		})
 		.controller("pageCtrl",function($scope,$remoteDB,$db,$stateParams,$compile,$rootScope){
 			$scope.words = [];

@@ -33,6 +33,11 @@
 					var tr = new TaskRunner();
 					for (var i in data) {
 						book = data[i];
+						tr.addTask(function(){
+							db_help.clearList();
+
+							return db_help.clearWord();
+						});
 						for(var l in book){
 							tr.addTask((function(list){
 								return function(){
