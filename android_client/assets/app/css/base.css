@@ -1,0 +1,89 @@
+/**
+*基础css
+**/
+* {
+    margin:0;
+    padding:0;
+    border: none;
+}
+html,body{
+    width:100%;
+    font-size:1.25em;
+    height: 100%;
+    outline: 0;
+    position: relative;
+    color: rgb(51,51,51);
+    background: rgb(250,250,250);
+}
+div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,header{
+    font-family:"微软雅黑", Geneva, sans-serif;
+    vertical-align: baseline;
+    font-size:inherit;
+    text-size-adjust:none;
+    box-sizing:border-box;
+
+}
+ol,ul,li{
+    list-style: none;
+}
+table{
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+:focus {
+    outline: 0;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: "";
+}
+blockquote, q {
+    quotes: "" "";
+}
+h6{
+    font-size:1rem;
+}
+h5{
+    font-size:1.2rem;
+}
+h4{
+    font-size:1.4rem;
+}
+h3{
+    font-size:1.6rem;
+}
+h2{
+    font-size:1.8rem;
+}
+h1{
+    font-size:2.0rem;
+}
+a {
+    color:inherit;
+}
+a:link{ 
+    text-decoration:none;
+}
+a:visited{
+    text-decoration:none;
+}
+a:hover{
+    text-decoration:none;
+}
+a:active{
+    text-decoration:none;
+}
+
+input::-webkit-input-placeholder{
+    font-family:"微软雅黑", Geneva, sans-serif;
+}
+textarea::-webkit-input-placeholder{    
+    font-family:"微软雅黑", Geneva, sans-serif;
+}
