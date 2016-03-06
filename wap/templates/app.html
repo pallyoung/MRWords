@@ -1,0 +1,12 @@
+<ion-view >
+	<ion-header-bar class="bar-assertive" ng-show = "hasHeader">
+		<ion-view>
+			<ion-nav-view name="header"></ion-nav-view>
+		</ion-view>
+	</ion-header-bar>
+    <div class="scroll-content {{hasHeader&&'has-header'}}">
+    	<ion-view>
+    		<ion-nav-view name="content"></ion-nav-view>
+    	</ion-view>
+    </div>      
+</ion-view>

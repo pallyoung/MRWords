@@ -1,0 +1,21 @@
+<!-- page.html -->
+<ion-view cache-view="false" style="position: absolute;">
+	<ion-scroll style="position: absolute;top:0;bottom:200px;left:0;right:0;overflow: hidden;">
+		<ul class="list">
+			<li class="item " ng-repeat="w in words" ng-click="showMeaning({{w}})">
+				<p><span>{{w.word}}</span></p>
+			</li>
+		</ul>
+	</ion-scroll>	
+	<div style="height: 200px;position: absolute;bottom: 0;width:100%" >
+		<div style="height: 10px" class="dark-bg"></div>
+		<ion-scroll style="height: 140px;overflow: hidden;" class="padding">
+			<div ng-bind-html = "selectedWord.meaning"></div>
+		</ion-scroll>		
+		<div style="height:50px;" class="bar bar-positive padding">
+			<p style="line-height: 30px">
+				{{selectedWord.word}}
+			</p>
+		</div>
+	</div>
+</ion-view>

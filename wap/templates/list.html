@@ -1,0 +1,10 @@
+<!-- list.html -->
+<ion-content>
+	<ion-list>
+		<ion-item ng-repeat="l in lists">
+			<a ui-sref="app.page({list_id:l.id,list_name:l.name})" style="text-decoration:none">
+				<p><span>{{l.name}}</span></p>
+			</a>
+		</ion-item>
+	</ion-list>
+</ion-content>

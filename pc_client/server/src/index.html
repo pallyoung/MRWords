@@ -57,6 +57,26 @@
 			margin-right: 1em;
 			line-height:1.5em;
 		}
+		#books{
+			height:40%;
+			border-bottom:  solid 1px rgb(0,0,0);	
+		}
+		#books>div{
+			height: 20%
+		}
+		#books ul{
+			height: 80%
+			padding-left: 2em
+		}
+		#wordlists{
+			height:60%;
+			padding-left: 2em
+		}
+		#books li,#wordlists li{
+			height: 2em;
+			line-height: 2em;
+			list-style-type :none
+		}
 		.middle{
 			line-height: 2em;
 		}
@@ -71,6 +91,18 @@
 </head>
 <body>
 	<div class="left">
+		<div id="books">
+			<div>
+				<input type="text" placeholder="请输入书名" id = "book_name">
+				<a href="javascript:void(0)" onclick="createBook()">新建</a>
+			</div>
+			<ul id = "book_items">
+				
+			</ul>
+		</div> 
+		<p class="title">
+			<label for="">bookname:</label><span id='active_book'></span>
+		</p>
 		<ul id="wordlists">
 			
 		</ul>
@@ -81,14 +113,14 @@
 			<p class="title">已添加</p>
 			<ul id="booknames"></ul>
 			<p class="actionBar">
-				<input type="date" id="time">
-				<a href="javascript:void(0)" id="add" onclick="newbook()">添加</a>
+				<input type="text" id="chapter_name">
+				<a href="javascript:void(0)" id="add" onclick="createChapter()">添加</a>
 			</p>
 		</div>
 		
 		<div class="middle">
 			<p class="title">
-				<label for="">bookname:</label><span id='activiteBook'></span>
+				<label for="">listname:</label><span id='active_list' data-id=""></span>
 			</p>
 			<p class="title">
 				<label for="">word:</label>
@@ -123,14 +155,17 @@
 	
 
 	<script>
-		var wordlist={};
 		var activelist;
+		var activebook;
+		var unsaveList={};//未保存的
+		var list;//当前的
 		function parseName(name){
 			return new Date(Number(name)).toLocaleDateString();
 		}
-		function getList(){
+		function getChapters(){
 			var xhr=new XMLHttpRequest();
-			xhr.open("get","common/getWordListsURL");
+			var data = "book_id="+activebook;
+			xhr.open("post","common/getWordListsURL");
 			xhr.onreadystatechange = function() {			
 				if (xhr.readyState == 4) {
 					xhr.onreadystatechange=null;
@@ -139,8 +174,10 @@
 						var html=[];
 						for(i in data){
 							html.push("<li data-url='"+data[i].url+"'");
-							html.push(" data-name='"+data[i].fname+"'>");
-							html.push(parseName(data[i].fname));
+							html.push(" data-id='"+data[i].id+"'");
+							html.push(" data-name='"+data[i].name+"'>");
+							html.push(data[i].name);
+							html.push("&nbsp;&nbsp;&nbsp;"+new Date(data[i].u_time).toLocaleDateString());
 							html.push("</li>");
 						}
 						document.getElementById("wordlists").innerHTML=html.join("");
@@ -149,7 +186,7 @@
 					}
 				}
 			};
-			xhr.send(null);
+			xhr.send(data);
 		}
 		function decodeHTML(html){
 			return html.replace(/&lt;/g,"<");
@@ -157,7 +194,7 @@
 		function encodeHTML(html){
 			return html.replace(/</g,"&lt;");
 		}
-		function showWordList(item,name){
+		function showWordList(item,list){
 			var html=[];
 			for(var i in item){
 				html.push("<li data-meaning='"+encodeHTML(item[i].meaning)+"' ");
@@ -165,8 +202,9 @@
 				html.push(item[i].word);
 				html.push("</li>");
 			}
-			document.getElementById("activiteBook").innerHTML=parseName(name);
-			document.getElementById("activiteBook").dataset.name=name;
+			document.getElementById("active_list").innerHTML=list.name;
+			document.getElementById("active_list").dataset.id=list.id;
+			document.getElementById("active_list").dataset.name=list.name;
 			document.getElementById("count").innerHTML=Object.keys(item).length;
 			document.getElementById("items").innerHTML=html.join("");
 		}
@@ -177,13 +215,12 @@
 				document.getElementById("meaning").innerHTML=decodeHTML(dataset.meaning);
 			}
 		}
-		function getBookFromServer(e){
+		function getListFromServer(e){
 			var target=e.target;
 			var dataset=target.dataset;
 			var xhr;
 			var name;
 			if(dataset.url){
-				name=dataset.name;
 				xhr=new XMLHttpRequest();
 				xhr.open("get",dataset.url);
 				xhr.onreadystatechange = function() {			
@@ -191,7 +228,12 @@
 					xhr.onreadystatechange=null;
 					if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
 						var data=JSON.parse(xhr.responseText);
-						showWordList(data,name);
+						showWordList(data,{
+							id:dataset.id,
+							name:dataset.name
+						});
+						activelist = dataset.id;
+						list = data;
 					} else {
 						alert("getBookFromServer error");
 					}
@@ -211,21 +253,74 @@
 			}
 			showWordList(data,name);
 		}
-		function newbook(){
-			if(document.getElementById("time").value==""){
+		function createChapter(){
+			var name = document.getElementById("chapter_name").value;
+			var xhr,data = "";
+			if(name){
+				xhr = new XMLHttpRequest();
+				xhr.open("post","common/createChapter");
+				xhr.onreadystatechange = function(){
+					if (xhr.readyState == 4) {
+						xhr.onreadystatechange=null;
+						if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+							document.getElementById("chapter_name").value = "";
+							getChapters()
+						} else {
+							alert("create chapter error");
+						}
+					}
+				}
+				data = "book_id="+activebook;
+				data+="&name="+name;
+				xhr.send(data);
 				return;
 			}
-			var name=new Date(document.getElementById("time").value).getTime();
-			if(!wordlist[name]){
-				wordlist[name]={};
+		}
+		function createBook(){
+			var name = document.getElementById("book_name").value;
+			var xhr,data;
+			if(name){
+				xhr = new XMLHttpRequest();
+				xhr.open("post","common/createBook");
+				data = "name="+name;
+				xhr.onreadystatechange = function(){
+					if (xhr.readyState == 4) {
+						xhr.onreadystatechange=null;
+						if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+							showBooks();
+						} else {
+							alert("error");
+						}
+					}
+				}
+				xhr.send(data);
 			}
-			showBookNames();
 		}
-		function getActiveBook(){
-			return wordlist[getActiveBookName()];
+		function showBooks(){
+			var xhr = new XMLHttpRequest;
+			xhr.open("get","common/getBooks");
+			xhr.onreadystatechange = function(){
+				if (xhr.readyState == 4) {
+					xhr.onreadystatechange=null;
+					if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+						var data =  JSON.parse(xhr.responseText);
+						var html="",book;
+						for(o in data){
+							book = data[o];
+							html+='<li data-id = "'+book.id+'" >'+book.name+"&nbsp;&nbsp;&nbsp;&nbsp;"+new Date(book.c_time).toLocaleDateString()+'</li>';
+						}
+						document.getElementById("book_items").innerHTML=html;
+						activebook = activebook|| document.getElementById("book_items").children[0].dataset.id;
+						document.getElementById('active_book').innerHTML = data[activebook].name;
+						getChapters();
+					} 
+				}
+			}
+			xhr.send();
 		}
-		function getActiveBookName(){
-			return document.getElementById("activiteBook").dataset.name;
+		function bookSelected(book){
+			activebook = book;
+			getChapters();
 		}
 		function showBookNames(){
 			var html=[];
@@ -236,32 +331,32 @@
 		}
 		function save () {
 			
-			var name=document.getElementById("activiteBook").dataset.name;
-			var activelist=wordlist[name];
+			var id=document.getElementById("active_list").dataset.id;
 			var item={
 				word:document.getElementById('word').value,
-				name:name,
+				list_id:activelist,
+				book_id:activebook,
 				meaning:"",
 				undateTime:Date.now()			
 			};
-			activelist[document.getElementById('word').value]=item;
+			list[document.getElementById('word').value]=item;
+			unsaveList[activelist]={
+				book_id:activebook,
+				list_id:activelist,
+				data:list
+			};
 			document.getElementById('word').value="";
 			getMeaning(item);
 		}
 		function savetoserver(){
 			var xhr=new XMLHttpRequest();
-			xhr.open("post","common/savewordlist");
-			var data="";
-			data+="list="+encodeURIComponent(JSON.stringify(getActiveBook()));
-			data+="&name="+document.getElementById("activiteBook").dataset.name;
-
+			xhr.open("post","common/savelists");
+			var data = "";
+			data+="lists="+encodeURIComponent(JSON.stringify(unsaveList));
 			xhr.onreadystatechange = function() {			
 				if (xhr.readyState == 4) {
 					xhr.onreadystatechange=null;
 					if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
-						delete wordlist[getActiveBookName()];
-						showBookNames();
-						getList();
 						alert("success");
 					} else {
 						alert("error");
@@ -286,7 +381,10 @@
 						if(reg.test(item.meaning)){
 							item.meaning=RegExp.$1;
 						}
-						showWordList(getActiveBook(),getActiveBookName());
+						showWordList(list,{
+							id:document.getElementById("active_list").dataset.id,
+							name:document.getElementById("active_list").dataset.name
+						});
 					} else {
 						alert("get meaning error");
 					}
@@ -305,9 +403,9 @@
 				document.getElementById("word").focus();
 			}
 		}
-		getList();
+		showBooks();
 		document.getElementById("items").addEventListener("click",showMeaning,false);
 		document.getElementById("booknames").addEventListener("click",getBookFromCache,false);
-		document.getElementById("wordlists").addEventListener("click",getBookFromServer,false);
+		document.getElementById("wordlists").addEventListener("click",getListFromServer,false);
 	</script></body>
 </html>

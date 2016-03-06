@@ -1,0 +1,10 @@
+<!-- header.html -->
+<div class="bar bar-header bar-assertive">
+	<div class="buttons" ng-hide="$mystate.history.length==0" ng-click="goBack()">
+		<button class="button icon ion-android-arrow-back"></button>
+	</div>
+	<h1 class="title">{{title}}</h1>
+	<div class="buttons" ng-click="checkDBUpdate()">
+	   	<button class="button">更新</button>
+	</div>
+</div>

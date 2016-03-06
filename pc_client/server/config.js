@@ -5,5 +5,5 @@ module.exports={
 	"debug":true,
 	"index":"index.html",
 	"unicode":"utf-8",
-	"controller":"router_config.js"
+	"controller":require("./router_config")
 };

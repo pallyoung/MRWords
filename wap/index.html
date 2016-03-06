@@ -22,37 +22,15 @@
             }
 	</script>
 	<title>index</title>
-	<link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/app.css">
-	<script src="js/libs/require.js"></script>
-
-	<script src="js/config.js"></script>
+     <link href="js/libs/ionic/css/ionic.css" rel="stylesheet">
+    <!-- IF using Sass (run gulp sass first), then remove the CSS include above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+    <script src = "js/libs/require.js" data-main = "js/config.js"></script>
+    <!-- ionic/angularjs js -->
+    <!-- your app's js -->
 </head>
-<body>
-	<section id="main">
-        <ul id="booklist">
-            
-        </ul>
-        <div id="content">
-            <ul id="wordlist"></ul>
-            <div id="stage">
-                <header id="word">
-                    
-                </header>
-                <article id="meaning">
-                    
-                </article>
-            </div>
-        </div>
-    </section>
-        
-    <footer id="foot">
-        <a href="javascript:void(0)" id="update">更新</a>
-        <p id="bookname"></p>
-        <a href="javascript:void(0)" id="back">返回</a>
-    </footer>
-    <div id="overlay">
-        <canvas id="painter"></canvas>
-    </div>
+<body ng-app="mrwords" style="height: 100%">
+    <ion-nav-view></ion-nav-view>
 </body>
 </html>

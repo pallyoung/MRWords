@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MRwords</string>
+    
+    <string name="launch_url">file:///android_asset/app/index.html</string>
+</resources>
