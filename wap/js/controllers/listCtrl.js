@@ -4,13 +4,7 @@
 		mrwords.controller("listCtrl",function($scope,$remoteDB,$db,$rootScope){
 			//$db.clear();
 			$scope.lists = [];
-			$db.getList().then(function(lists){	
-				for(var i =100;i>0;i--){
-					lists.push({
-						name:"a"+i,
-						id:i
-					});
-				}			
+			$db.getList().then(function(lists){		
 				$scope.lists = lists;
 				console.log($scope.lists);
 			});
@@ -23,13 +17,7 @@
 				return;
 			}
 			$scope.$emit("titlechange",$stateParams.list_name);
-			$db.getWordByList($stateParams.list_id).then(function(words){
-				for(var i =100;i>0;i--){
-					words.push({
-						word:"a"+i,
-						id:i
-					});
-				}			
+			$db.getWordByList($stateParams.list_id).then(function(words){	
 				$scope.words = words;
 				console.log(words)
 			},function(){
