@@ -1,6 +1,6 @@
 // constant.js
 (function () {
-	var ip = "http://localhost:3000";
+	var ip = localStorage.getItem("mrwords_ip")||"http://localhost:3000";
 
 	function factory(mrwords){
 		mrwords.constant("$const",{

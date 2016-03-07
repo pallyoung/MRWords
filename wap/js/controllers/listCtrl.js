@@ -23,20 +23,12 @@
 				$scope.words = words;
 				console.log(words)
 			},function(){
-				console.log(111)
 			});
 			$scope.showMeaning = function(word){
 				$scope.selectedWord =word ;
 			}
 		})
 		.controller("headerCtrl",function($scope,$rootScope,$db){
-			$scope.checkDBUpdate = function(){
-				$db.update().then(function(){
-					$rootScope.$mystate.reload();					
-				},function(){
-					console.log("error");
-				});
-			};
 
 		})
 		.controller("appCtrl",function($scope,$rootScope,$const){
@@ -45,10 +37,32 @@
 			}
 			$rootScope.$mystate.redirect("app.list");
 			$scope.hasHeader = true;
+			$scope.showMenu = false;
 			$scope.title = $const.APP_NAME;
 			$scope.$on("titlechange",function(e,v){
 				$scope.title = v;
-			})
+			});
+			$scope.toggleMenu = function(){
+				$scope.showMenu = !$scope.showMenu;
+			}
+			
+		})
+		.controller("MenuCtrl",function($scope,$db,$rootScope){
+			$scope.checkDBUpdate = function(){
+				$db.update().then(function(){
+					$rootScope.$mystate.reload();					
+				},function(){
+					console.log("error");
+				});
+			};
+		})
+		.controller("SettingCtrl",function($scope,$rootScope,$const){
+			$scope.ip = $const.ip;
+			$scope.$emit("titlechange","设置");
+			$scope.save=function(){
+				localStorage.setItem("mrwords_ip",$scope.ip);
+				location.reload();
+			}
 		});
 	}
 	define(["mrwords"],factory);
