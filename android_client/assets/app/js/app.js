@@ -15,6 +15,7 @@
 		var ID_BACK = "back";
 		var ID_OVERLAY = "overlay";
 		var ID_PAINTER = "painter";
+		var ID_OPTIONAL = "optional"
 		//ip = "http://localhost:3000";
 
 		db.contains("wordslist").then(function(data) {
@@ -199,7 +200,14 @@
 			});
 		}
 
+		function markIt(){
+			if(document.getElementById(ID_WORD).innerHTML!=""){
 
+			}
+		}
+		function unMark(){
+
+		}
 		function getBook() {
 			db.query("wordslist", "name").then(function(data) {
 				var names = [];

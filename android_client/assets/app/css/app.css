@@ -1,3 +1,4 @@
+
 .gridview{
 	position: absolute;
 	width: 100%;
@@ -39,6 +40,8 @@ wordview{
 }
 #wordlist li{
 	line-height: 3rem;
+	display: inline-block;
+	min-width: 33%;
 }
 #stage{
 	height: 39%;
@@ -52,9 +55,32 @@ wordview{
 #meaning{
 	position: absolute;
 	top: 3rem;
-	bottom: 0;
+	bottom: 3rem;
 	width: 100%;
 }
+#optinal{
+	position: absolute;
+	width: 100%;
+	bottom: 0;
+	height: 3rem;
+	line-height: 3rem;
+}
+#optional a{
+	display: inline-block;
+	height: 3rem;
+	line-height: 3rem;
+	width: 7rem;
+	max-width: 50%;
+	text-align:center;
+	font-weight:bold;
+}
+#optional a:nth-child(1){
+
+}
+#optional a:nth-child(2){
+	float: right;
+}
+
 #foot{
 	position: absolute;
 	height: 3rem;
